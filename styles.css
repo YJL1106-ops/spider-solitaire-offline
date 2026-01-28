@@ -202,7 +202,8 @@ select{
     radial-gradient(220px 140px at 30% 25%, rgba(255,255,255,.14), rgba(255,255,255,0) 60%),
     repeating-linear-gradient(45deg, #1a6b55, #1a6b55 10px, #155845 10px, #155845 20px);
   border-color: rgba(255,255,255,.20);
-  color: transparent;
+  /* override suit color rules so the face never shows */
+  color: transparent !important;
   filter: saturate(1.08);
 }
 
