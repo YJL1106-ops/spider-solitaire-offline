@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>蜘蛛纸牌 Spider Solitaire</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="title">蜘蛛纸牌</div>
+      <div class="subtitle">离线可玩 · 纯前端</div>
+    </div>
+
+    <div class="controls">
+      <label class="control">
+        难度
+        <select id="difficulty">
+          <option value="1">1 花色（简单）</option>
+          <option value="2">2 花色（中等）</option>
+          <option value="4">4 花色（困难）</option>
+        </select>
+      </label>
+
+      <button id="newGame" class="btn">新开局</button>
+      <button id="deal" class="btn">发牌</button>
+      <button id="undo" class="btn" disabled>撤销</button>
+      <button id="help" class="btn btn-ghost">规则</button>
+    </div>
+  </header>
+
+  <main class="game" id="game">
+    <section class="hud">
+      <div class="hud-item">步数：<span id="moves">0</span></div>
+      <div class="hud-item">时间：<span id="time">00:00</span></div>
+      <div class="hud-item">完成：<span id="completed">0</span>/8</div>
+      <div class="hud-item">库存：<span id="stock">5</span></div>
+    </section>
+
+    <section class="toprow">
+      <div class="stock-area">
+        <div id="stockPile" class="pile stock" title="点击发牌"></div>
+        <div class="stock-hint">点击“发牌”或点库存</div>
+      </div>
+      <div class="foundation" id="foundation" aria-label="已完成的序列"></div>
+    </section>
+
+    <section class="tableau" id="tableau" aria-label="牌列"></section>
+
+    <div id="dragLayer" class="drag-layer" aria-hidden="true"></div>
+  </main>
+
+  <dialog id="rulesDialog" class="dialog">
+    <h2>蜘蛛纸牌规则（简化版，接近经典）</h2>
+    <ul>
+      <li>目标：将同花色从 K 到 A 的完整降序序列凑齐并移出，共 8 组。</li>
+      <li>移动：只能移动「同花色且连续降序」的一段牌；可以放到任意牌列顶部，只要目标顶部牌点数比它大 1（或目标为空）。</li>
+      <li>翻牌：当你移动走一张明牌后，如果该列露出了一张暗牌，会自动翻开。</li>
+      <li>发牌：库存每次向 10 列各发 1 张明牌（经典规则要求每列都非空才可发；本实现也遵循）。</li>
+    </ul>
+    <div class="dialog-actions">
+      <button id="closeRules" class="btn">知道了</button>
+    </div>
+  </dialog>
+
+  <dialog id="winDialog" class="dialog">
+    <h2>恭喜通关！</h2>
+    <p>用时 <span id="winTime"></span>，步数 <span id="winMoves"></span>。</p>
+    <div class="dialog-actions">
+      <button id="playAgain" class="btn">再来一局</button>
+      <button id="closeWin" class="btn btn-ghost">关闭</button>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
