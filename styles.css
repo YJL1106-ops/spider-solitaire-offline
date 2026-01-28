@@ -24,8 +24,15 @@ body{
   margin:0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   color: var(--text);
-  background: radial-gradient(1000px 600px at 30% 10%, #0e5b46, var(--bg));
+  /* richer, fully-offline background (no external images) */
+  background:
+    radial-gradient(900px 520px at 18% 10%, rgba(86,211,158,.32), rgba(86,211,158,0) 60%),
+    radial-gradient(820px 520px at 78% 18%, rgba(120,160,255,.18), rgba(120,160,255,0) 62%),
+    radial-gradient(680px 520px at 55% 86%, rgba(255,214,102,.12), rgba(255,214,102,0) 62%),
+    linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,0) 240px),
+    radial-gradient(1200px 720px at 30% 10%, #0e5b46, var(--bg));
   user-select:none;
+  overflow: hidden;
 }
 
 .topbar{
@@ -62,7 +69,12 @@ select{
 .btn:disabled{ opacity:.5; cursor:not-allowed; }
 .btn-ghost{ background: transparent; }
 
-.game{ padding: 0 16px 18px; }
+.game{
+  padding: 0 16px 18px;
+  /* allow tall stacks to remain reachable */
+  height: calc(100vh - 72px);
+  overflow: auto;
+}
 
 .hud{
   display:flex;
@@ -96,7 +108,7 @@ select{
   grid-template-columns: repeat(10, var(--w));
   gap: var(--gap);
   align-items:start;
-  overflow-x:auto;
+  overflow: auto;
   padding-bottom: 8px;
 }
 
@@ -143,9 +155,12 @@ select{
 }
 
 .card.face-down{
-  background: repeating-linear-gradient(45deg, #1a6b55, #1a6b55 10px, #155845 10px, #155845 20px);
-  border-color: rgba(255,255,255,.15);
+  background:
+    radial-gradient(220px 140px at 30% 25%, rgba(255,255,255,.14), rgba(255,255,255,0) 60%),
+    repeating-linear-gradient(45deg, #1a6b55, #1a6b55 10px, #155845 10px, #155845 20px);
+  border-color: rgba(255,255,255,.20);
   color: transparent;
+  filter: saturate(1.08);
 }
 
 .card .corner{

@@ -227,8 +227,11 @@ function render(){
       pileEl.appendChild(cEl);
     }
 
-    // auto height for long piles
-    pileEl.style.height = `${Math.max(cssVar('--h'), pile.length * cssVar('--stackGap') + cssVar('--h')*0.25)}px`;
+    // auto height for long piles (ensure cards are not clipped when stacks get tall)
+    const gapForHeight = pile.length > 18 ? cssVar('--stackGapTight') : cssVar('--stackGap');
+    const h = cssVar('--h');
+    const height = pile.length === 0 ? h : (h + (pile.length - 1) * gapForHeight + 14);
+    pileEl.style.height = `${Math.max(h, height)}px`;
     elTableau.appendChild(pileEl);
   }
 
