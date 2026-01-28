@@ -243,33 +243,39 @@ function render(){
 }
 
 function fitLayoutNoScroll(){
-  const topbar = document.querySelector('.topbar');
-  const hud = document.querySelector('.hud');
-  const toprow = document.querySelector('.toprow');
-  if (!topbar || !hud || !toprow) return;
+  const tableauEl = document.getElementById('tableau');
+  if (!tableauEl) return;
 
+  // compute how much vertical space the stacks can use (from tableau top to viewport bottom)
+  const rect = tableauEl.getBoundingClientRect();
   const viewportH = window.innerHeight;
-  const topH = topbar.getBoundingClientRect().height;
-  const hudH = hud.getBoundingClientRect().height;
-  const rowH = toprow.getBoundingClientRect().height;
+  const available = Math.max(160, Math.floor(viewportH - rect.top - 18));
 
-  // paddings/margins (approx) inside .game
-  const reserved = topH + hudH + rowH + 42;
-  const available = Math.max(140, viewportH - reserved);
-
-  const h = cssVar('--h') || 120;
+  const baseW = cssVar('--w') || 80;
   const baseGap = cssVar('--stackGap') || 20;
-  const minGap = 8;
+  const minGap = 10;
 
-  // tallest stack drives the spacing
   const maxLen = Math.max(1, ...state.tableau.map(p => p.length));
-  // total height = h + (n-1)*gap should fit into available
-  let gap = (maxLen <= 1) ? baseGap : Math.floor((available - h) / (maxLen - 1));
+
+  // First choose a gap that would fit with the current card height.
+  let wDyn = baseW;
+  let hDyn = Math.floor(wDyn * 1.38);
+  let gap = (maxLen <= 1) ? baseGap : Math.floor((available - hDyn) / (maxLen - 1));
+
+  // If gap would be too small, keep a minimum gap and instead shrink the cards.
+  if (gap < minGap){
+    gap = minGap;
+    const hMax = Math.max(72, available - (maxLen - 1) * gap);
+    wDyn = Math.max(46, Math.floor(hMax / 1.38));
+    hDyn = Math.floor(wDyn * 1.38);
+  }
+
   gap = Math.max(minGap, Math.min(baseGap, gap));
 
+  document.documentElement.style.setProperty('--wDyn', `${wDyn}px`);
   document.documentElement.style.setProperty('--stackGapDyn', `${gap}px`);
 
-  // also constrain pile elements to the available area so nothing spills outside
+  // reserve fixed height for each pile within the available tableau area
   document.querySelectorAll('.tableau-pile').forEach(el => {
     el.style.height = `${available}px`;
   });
