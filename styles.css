@@ -38,21 +38,18 @@ body{
   background: radial-gradient(1200px 720px at 30% 10%, #0e5b46, var(--bg));
 }
 
-/* photo background (offline: bundled in repo) */
+/* style-like background (no direct photo) */
 body::before{
   content:"";
   position: fixed;
   inset: 0;
   z-index: -2;
   background:
-    radial-gradient(900px 520px at 18% 10%, rgba(86,211,158,.25), rgba(86,211,158,0) 60%),
-    radial-gradient(820px 520px at 78% 18%, rgba(120,160,255,.16), rgba(120,160,255,0) 62%),
-    url("e3fabd0be6e182c0fbce234ad286b90d.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+    radial-gradient(1100px 680px at 18% 12%, rgba(64, 190, 150, .35), rgba(64, 190, 150, 0) 62%),
+    radial-gradient(900px 560px at 78% 16%, rgba(40, 120, 110, .22), rgba(40, 120, 110, 0) 64%),
+    radial-gradient(720px 520px at 50% 86%, rgba(10, 40, 38, .35), rgba(10, 40, 38, 0) 70%),
+    linear-gradient(180deg, rgba(7, 35, 28, .92), rgba(10, 55, 44, .92));
   filter: saturate(1.05) contrast(1.05);
-  transform: scale(1.02);
 }
 
 /* dark vignette + readability overlay */
@@ -62,8 +59,8 @@ body::after{
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(1200px 700px at 50% 20%, rgba(0,0,0,.25), rgba(0,0,0,.62) 72%),
-    linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.00) 260px);
+    radial-gradient(1200px 700px at 50% 18%, rgba(0,0,0,.22), rgba(0,0,0,.58) 72%),
+    linear-gradient(180deg, rgba(0,0,0,.16), rgba(0,0,0,.00) 260px);
 }
 
 .topbar{
