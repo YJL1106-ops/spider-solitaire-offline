@@ -12,13 +12,16 @@
   --outline: rgba(255,255,255,.2);
   --radius: 12px;
 
-  /* responsive card size: desktop fits 10 columns more comfortably */
-  --w: clamp(62px, 7.2vw, 92px);
+  /* responsive card size: desktop fits 10 columns */
+  --w: clamp(60px, 7.0vw, 92px);
   --h: calc(var(--w) * 1.38);
 
   --gap: clamp(6px, 0.9vw, 10px);
-  --stackGap: clamp(18px, 2.2vw, 26px);
-  --stackGapTight: clamp(14px, 1.8vw, 20px);
+
+  /* base gaps (JS may override with --stackGapDyn to avoid any scrolling) */
+  --stackGap: clamp(16px, 2.0vw, 24px);
+  --stackGapTight: clamp(12px, 1.6vw, 18px);
+  --stackGapDyn: var(--stackGap);
 }
 
 *{ box-sizing:border-box; }
@@ -39,16 +42,12 @@ body{
 }
 
 .topbar{
-  position: sticky;
-  top: 0;
-  z-index: 50;
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap: 12px;
   padding:12px 16px;
-  background: linear-gradient(180deg, rgba(0,0,0,.42), rgba(0,0,0,0));
-  backdrop-filter: blur(8px);
+  background: linear-gradient(180deg, rgba(0,0,0,.30), rgba(0,0,0,0));
 }
 .brand .title{ font-size:20px; font-weight:700; letter-spacing:.5px; }
 .brand .subtitle{ font-size:12px; color:var(--muted); margin-top:2px; }
@@ -79,25 +78,21 @@ select{
 
 .game{
   padding: 0 16px 18px;
-  /* centered desktop layout + scroll for tall stacks */
   max-width: 1400px;
   margin: 0 auto;
+  /* no scrolling; everything should fit */
   height: calc(100vh - 64px);
-  overflow: auto;
+  overflow: hidden;
 }
 
 .hud{
-  position: sticky;
-  top: 58px;
-  z-index: 40;
+  /* no scrolling: keep as regular flow layout */
   display:flex;
   gap:10px;
   flex-wrap: wrap;
   color: var(--muted);
   font-size:13px;
   padding: 8px 0 10px;
-  background: linear-gradient(180deg, rgba(0,0,0,.26), rgba(0,0,0,0));
-  backdrop-filter: blur(6px);
 }
 .hud-item{ background: rgba(0,0,0,.14); border:1px solid rgba(255,255,255,.10); padding:6px 10px; border-radius: 999px; }
 
@@ -126,11 +121,10 @@ select{
 
 .tableau{
   display:grid;
-  /* make 10 columns fit desktop width better; still scrolls if needed */
   grid-template-columns: repeat(10, minmax(0, 1fr));
   gap: var(--gap);
   align-items:start;
-  overflow: auto;
+  overflow: hidden;
   padding-bottom: 10px;
 }
 

@@ -220,7 +220,9 @@ function render(){
     for (let i=0; i<pile.length; i++){
       const card = pile[i];
       const cEl = cardElement(card);
-      const gap = i < 10 ? cssVar('--stackGap') : cssVar('--stackGapTight');
+      const gapBase = cssVar('--stackGapDyn') || cssVar('--stackGap');
+      const gapTight = cssVar('--stackGapTight');
+      const gap = (pile.length > 16) ? gapTight : gapBase;
       cEl.style.top = `${i * gap}px`;
       cEl.dataset.index = String(i);
       cEl.dataset.col = String(col);
@@ -228,14 +230,49 @@ function render(){
     }
 
     // auto height for long piles (ensure cards are not clipped when stacks get tall)
-    const gapForHeight = pile.length > 18 ? cssVar('--stackGapTight') : cssVar('--stackGap');
+    // pile height is constrained to the available tableau area (no scrolling)
     const h = cssVar('--h');
-    const height = pile.length === 0 ? h : (h + (pile.length - 1) * gapForHeight + 14);
+    const height = h + 14; // base; actual card positions use dynamic gaps
     pileEl.style.height = `${Math.max(h, height)}px`;
     elTableau.appendChild(pileEl);
   }
 
   updateHud();
+  // after DOM updates, compute a stack gap that fits the tallest pile into the visible area
+  requestAnimationFrame(fitLayoutNoScroll);
+}
+
+function fitLayoutNoScroll(){
+  const topbar = document.querySelector('.topbar');
+  const hud = document.querySelector('.hud');
+  const toprow = document.querySelector('.toprow');
+  if (!topbar || !hud || !toprow) return;
+
+  const viewportH = window.innerHeight;
+  const topH = topbar.getBoundingClientRect().height;
+  const hudH = hud.getBoundingClientRect().height;
+  const rowH = toprow.getBoundingClientRect().height;
+
+  // paddings/margins (approx) inside .game
+  const reserved = topH + hudH + rowH + 42;
+  const available = Math.max(140, viewportH - reserved);
+
+  const h = cssVar('--h') || 120;
+  const baseGap = cssVar('--stackGap') || 20;
+  const minGap = 8;
+
+  // tallest stack drives the spacing
+  const maxLen = Math.max(1, ...state.tableau.map(p => p.length));
+  // total height = h + (n-1)*gap should fit into available
+  let gap = (maxLen <= 1) ? baseGap : Math.floor((available - h) / (maxLen - 1));
+  gap = Math.max(minGap, Math.min(baseGap, gap));
+
+  document.documentElement.style.setProperty('--stackGapDyn', `${gap}px`);
+
+  // also constrain pile elements to the available area so nothing spills outside
+  document.querySelectorAll('.tableau-pile').forEach(el => {
+    el.style.height = `${available}px`;
+  });
 }
 
 function cssVar(name){
@@ -555,6 +592,11 @@ elUndo.addEventListener('click', ()=> undo());
 elDifficulty.addEventListener('change', ()=> newGame());
 
 // Keyboard shortcuts
+window.addEventListener('resize', ()=>{
+  // keep everything visible without scroll when the window size changes
+  fitLayoutNoScroll();
+});
+
 window.addEventListener('keydown', (e)=>{
   if (e.key === 'Escape'){
     if (rulesDialog.open) rulesDialog.close();
